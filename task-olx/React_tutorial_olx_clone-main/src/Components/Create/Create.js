@@ -1,30 +1,50 @@
 import React, { Fragment, useContext, useState } from "react";
 import "./Create.css";
 import Header from "../Header/Header";
-import { AuthContext, FirebaseContext } from "../../store/FirebaseContext";
+import { AuthContext } from "../../store/FirebaseContext";
 import { storage } from "../../firebase/config";
-import { ref, uploadBytesResumable,getDownloadURL } from "firebase/storage";
+import { ref,getDownloadURL, uploadBytes } from "firebase/storage";
+import { db } from "../../firebase/config";
+import { collection,addDoc } from "firebase/firestore";
+import { useHistory } from "react-router-dom";
 
 const Create = () => {
   // const { firebase } = useContext(FirebaseContext);
-  // const { user } = useContext(AuthContext);
+   const { user } = useContext(AuthContext);
   // const [percent,setPercent] = useState('')
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
-  const handleUpload =  ()=> {
-    console.log("hi");
-    // const storageRef = ref(storage, `${image.name}`);
-    // const storageImgRef = ref(storage, `/images/${image.name}`);
+  const history = useHistory();
+  const date = new Date();
+  const handleUpload =  async(e)=> {
+    try {
+      e.preventDefault();
+      console.log("hi");
+   // const storageRef = ref(storage, `${image.name}`);
+    const storageImgRef = ref(storage, `/images/${image.name}`);
 
 
-    // const uploadTask = uploadBytesResumable(storageRef, image);
+    await uploadBytes(storageImgRef, image);
     
       
-    //     getDownloadURL(storageRef).then((url) => {
-    //       console.log(url);
-    //     })
+       const url = await getDownloadURL(storageImgRef)
+       console.log(url)
+
+       //add remaining datas to store
+       await addDoc(collection(db, "products"), {
+        name,
+        category,
+        price,
+        url,
+        userId:user.uid,
+        createdOn: date.toDateString()
+      });
+      history.push('/')
+    } catch (error) {
+      console.log(error)
+    }
       
     
   };

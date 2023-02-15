@@ -1,5 +1,4 @@
-import React, { useState ,useContext} from 'react';
-import { FirebaseContext } from '../../store/FirebaseContext';
+import React, { useState} from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase/config';
 import { useHistory } from 'react-router-dom';
@@ -10,14 +9,14 @@ import './Login.css';
 function Login() {
   const [email,setEmail] = useState('');
   const [password,SetPassword] = useState('');
-  const {firebase} = useContext(FirebaseContext);
+  //const {firebase} = useContext(FirebaseContext);
   const history = useHistory()
   const handleLogin = (e)=>{
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
     // Signed in 
-    const user = userCredential.user;
+    // const user = userCredential.user;
     
     alert("Logged In");
     history.push('/')
@@ -32,7 +31,7 @@ function Login() {
   return (
     <div>
       <div className="loginParentDiv">
-        <img width="200px" height="200px" src={Logo}></img>
+        <img width="200px" height="200px" src={Logo} alt= ''></img>
         <form onSubmit={handleLogin}>
           <label htmlFor="fname">Email</label>
           <br />

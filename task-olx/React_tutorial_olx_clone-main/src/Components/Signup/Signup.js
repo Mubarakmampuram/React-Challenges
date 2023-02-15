@@ -26,15 +26,17 @@ export default function Signup() {
 
     console.log(`User ${result.user.uid} created`);
 
-   await updateProfile(auth.currentUser, { displayName: username });
+   await updateProfile(auth.currentUser, { displayName: username});
 
     
 
-    await addDoc(collection(db, "users"), {
+   const user = await addDoc(collection(db, "users"), {
       id: result.user.uid,
       username: username,
       phone: phone,
     });
+    console.log(user);
+    console.log(user.id)
     history.push("/login");
   };
 
